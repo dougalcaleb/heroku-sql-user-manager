@@ -13,17 +13,17 @@ app.use(express.static("public"));
 // GET REQUESTS
 // =======================================
 
-app.get("/", (req, res) => {
-   app.render("index");
-});
+// app.get("/", (req, res) => {
+//    app.render("index");
+// });
 
 // =======================================
 // POST REQUESTS
 // =======================================
 
-app.post("/", postParse, (req, res) => {
+// app.post("/", postParse, (req, res) => {
 
-});
+// });
 
 // =======================================
 // MISC
