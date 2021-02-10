@@ -13,9 +13,9 @@ app.use(express.static("public"));
 // GET REQUESTS
 // =======================================
 
-// app.get("/", (req, res) => {
-//    app.render("index");
-// });
+app.get("/", (req, res) => {
+   res.render("index");
+});
 
 // =======================================
 // POST REQUESTS
