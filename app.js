@@ -82,8 +82,11 @@ app.get("/users/:query*?", (req, res) => {
    pool.query(`SELECT * FROM ${dataset} WHERE id = $1`, [req.params.query], (e, data) => {
       if (e) throw e;
       if (data) {
+         console.log(`Retrieved data. Outputting:`);
+         console.log(JSON.stringify(data));
          res.render("users", { users: data, userCount: data.length || 0 });
       } else {
+         console.log("Recieved no data");
          res.render("users", { users: [], userCount: 0 });
       }
    });
