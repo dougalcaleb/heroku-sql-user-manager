@@ -16,7 +16,7 @@ let SSL = process.env.SSL || { rejectUnauthorized: false };
 let dataset = "users";
 
 app.set("view engine", "pug");
-app.set("views", "/views");
+app.set("views", "./views");
 app.use(express.static("public"));
 
 
