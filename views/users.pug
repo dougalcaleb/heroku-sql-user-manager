@@ -1,0 +1,31 @@
+doctype html
+html
+   head
+      title User List
+      link(rel="stylesheet", type="text/css", href="../css/style.css")
+   body
+      h1 #{userCount} users
+      table
+         tr
+            td User ID
+            td First Name
+            td Last Name
+            td Age
+            td Email
+         for user in users
+            tr
+               td #{user.userId}
+               td #{user.firstName}
+               td #{user.lastName}
+               td #{user.age}
+               td #{user.email}
+               td
+                  a(href="/edit/"+user.userId) EDIT
+               td
+                  a(href="/delete/"+user.userId) DELETE
+      br
+      a(href="/addUser") Add user
+      br
+      a(href="/search") Search
+      br
+      a(href="/users") See All Users (Unsorted)
