@@ -72,10 +72,15 @@ app.get("/users/:query*?", (req, res) => {
    if (req.params.query) {
       q = JSON.parse(req.params.query);
    }
-   // console.log(`Query is ${q}`);
+   console.log(`Query is ${q}`);
+   console.log(`Grabbing from dataset ${dataset} in db at url ${process.env.DATABASE_URL}`);
    pool.query(`SELECT * FROM ${dataset} WHERE id = $1`, req.params.query, (e, data) => {
       if (e) throw e;
-      res.render("users", { users: data, userCount: data.length || 0 });
+      if (data) {
+         res.render("users", { users: data, userCount: data.length || 0 });
+      } else {
+         res.render("users", { users: [], userCount: 0 });
+      }
    });
    // db.find(q, (e, data) => {
    //    if (e) throw e;
