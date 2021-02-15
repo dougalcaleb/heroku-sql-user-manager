@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const Pool = require('pg').Pool;
 const url = require("url");
 const uuid = require("uuid").v4;
+const e = require("express");
 
 // Setup
 var postParse = bodyParser.urlencoded({extended: false});
@@ -14,6 +15,9 @@ const dbUrlParams = url.parse(process.env.DATABASE_URL);
 const urlAuth = dbUrlParams.auth.split(":");
 let SSL = process.env.SSL || { rejectUnauthorized: false };
 let dataset = "users";
+
+let CREATE_TABLE = true;
+let DROP_OLD_TABLE = false;
 
 app.set("view engine", "pug");
 app.set("views", "./views");
@@ -63,6 +67,7 @@ function showAllUsers(res, sortCol = "id", dir = "ASC") {
       res.render("users", {users: data});
    });
 }
+
 // =======================================
 // GET REQUESTS
 // =======================================
@@ -165,3 +170,33 @@ app.post("/search", postParse, (req, res) => {
 app.listen(PORT, () => {
    console.log(`Listening on port ${PORT}`);
 });
+
+function manageTables() {
+   if (DROP_OLD_TABLE) {
+      pool.query(`DROP TABLE ${dataset}`, (e, res) => {
+         if (CREATE_TABLE) {
+            pool.query(`CREATE TABLE ${dataset} 
+               (id varchar(255),
+               firstName varchar(255),
+               lastName varchar(255),
+               email varchar(255),
+               age int
+            )`, (e, res) => {
+                  if (e) throw e;
+            });
+         }
+      });
+   } else if (CREATE_TABLE) {
+      pool.query(`CREATE TABLE ${dataset} 
+         (id varchar(255),
+         firstName varchar(255),
+         lastName varchar(255),
+         email varchar(255),
+         age int
+      )`, (e, res) => {
+            if (e) throw e;
+      });
+   }
+}
+
+manageTables();
