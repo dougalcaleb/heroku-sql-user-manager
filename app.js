@@ -16,7 +16,7 @@ const urlAuth = dbUrlParams.auth.split(":");
 let SSL = process.env.SSL || { rejectUnauthorized: false };
 let dataset = "users";
 
-let CREATE_TABLE = true;
+let CREATE_TABLE = false;
 let DROP_OLD_TABLE = false;
 
 app.set("view engine", "pug");
@@ -199,4 +199,4 @@ function manageTables() {
    }
 }
 
-manageTables();
+// manageTables();
