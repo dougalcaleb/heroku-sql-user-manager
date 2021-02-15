@@ -24,8 +24,8 @@ if (SSL === "false") {
 	SSL = false;
 }
 const config = {
-	user: auth[0],
-	password: auth[1],
+	user: urlAuth[0],
+	password: urlAuth[1],
 	host: dbUrlParams.hostname,
 	port: dbUrlParams.port,
 	database: dbUrlParams.pathname.split("/")[1],
