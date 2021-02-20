@@ -237,9 +237,9 @@ function manageTables() {
    }
 }
 
-async function updateUsers(res) {
-   db.find({}, (e, data) => {
-      res.render("users", {users: data, userCount: data.length || 0});
-   });
-}
+// async function updateUsers(res) {
+//    db.find({}, (e, data) => {
+//       res.render("users", {users: data, userCount: data.length || 0});
+//    });
+// }
 // manageTables();
