@@ -83,17 +83,32 @@ app.get("/users/:query*?", (req, res) => {
    }
    console.log(`Query is ${q}`);
    console.log(`Grabbing from dataset ${dataset} in db at url ${process.env.DATABASE_URL}`);
-   pool.query(`SELECT * FROM ${dataset} WHERE id = $1`, [req.params.query], (e, data) => {
-      if (e) throw e;
-      if (data.rows) {
-         console.log(`Retrieved data. Outputting:`);
-         console.log(JSON.stringify(data.rows));
-         res.render("users", { users: data.rows, userCount: data.rows.length || 0 });
-      } else {
-         console.log("Recieved no data");
-         res.render("users", { users: [], userCount: 0 });
-      }
-   });
+   if (req.params.query) {
+      pool.query(`SELECT * FROM ${dataset} WHERE id = $1`, [req.params.query], (e, data) => {
+         if (e) throw e;
+         if (data.rows) {
+            console.log(`Retrieved data. Outputting:`);
+            console.log(JSON.stringify(data.rows));
+            res.render("users", { users: data.rows, userCount: data.rows.length || 0 });
+         } else {
+            console.log("Recieved no data");
+            res.render("users", { users: [], userCount: 0 });
+         }
+      });
+   } else {
+      pool.query(`SELECT * FROM ${dataset}`, (e, data) => {
+         if (e) throw e;
+         if (data.rows) {
+            console.log(`Retrieved data. Outputting:`);
+            console.log(JSON.stringify(data.rows));
+            res.render("users", { users: data.rows, userCount: data.rows.length || 0 });
+         } else {
+            console.log("Recieved no data");
+            res.render("users", { users: [], userCount: 0 });
+         }
+      });
+   }
+   
    // db.find(q, (e, data) => {
    //    if (e) throw e;
    //    activeData = data;
