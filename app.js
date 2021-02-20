@@ -193,7 +193,7 @@ app.post("/editExisting", postParse, (req, res) => {
    //    if (e) console.log(e);
    //    updateUsers(res);
    // });
-   pool.query(`UPDATE ${dataset} SET firstName = $1, lastName = $2, email = $3, age = $4 WHERE id = $5`, [updatedUser.firstName, updateUser.lastName, updatedUser.email, updatedUser.age, editing], (e, data) => {
+   pool.query(`UPDATE ${dataset} SET firstName = $1, lastName = $2, email = $3, age = $4 WHERE id = $5`, [updatedUser.firstName, updatedUser.lastName, updatedUser.email, updatedUser.age, editing], (e, data) => {
       pool.query(`SELECT * FROM ${dataset}`, (e, data) => {
          res.render("users", { users: data.rows, userCount: data.rows.length });
       });
