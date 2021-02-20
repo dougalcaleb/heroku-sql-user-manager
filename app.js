@@ -1,21 +1,21 @@
+// locations
+const dbUrl = process.env.DATABASE_URL || "YourUrlHere";
+const PORT = process.env.PORT || 3001;
+let dataset = "users";
+
 // Dependencies
 const express = require("express");
 const bodyParser = require("body-parser");
 const Pool = require('pg').Pool;
 const url = require("url");
 const uuid = require("uuid").v4;
-const e = require("express");
-const { POINT_CONVERSION_COMPRESSED } = require("constants");
 
 // Setup
 var postParse = bodyParser.urlencoded({extended: false});
 const app = express();
-const PORT = process.env.PORT || 3001;
-const dbUrl = process.env.DATABASE_URL;
-const dbUrlParams = url.parse(process.env.DATABASE_URL);
+const dbUrlParams = url.parse(dbUrl);
 const urlAuth = dbUrlParams.auth.split(":");
 let SSL = process.env.SSL || { rejectUnauthorized: false };
-let dataset = "users";
 
 let CREATE_TABLE = false;
 let DROP_OLD_TABLE = false;
