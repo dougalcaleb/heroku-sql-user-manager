@@ -5,6 +5,7 @@ const Pool = require('pg').Pool;
 const url = require("url");
 const uuid = require("uuid").v4;
 const e = require("express");
+const { POINT_CONVERSION_COMPRESSED } = require("constants");
 
 // Setup
 var postParse = bodyParser.urlencoded({extended: false});
@@ -18,6 +19,8 @@ let dataset = "users";
 
 let CREATE_TABLE = false;
 let DROP_OLD_TABLE = false;
+
+let editing;
 
 app.set("view engine", "pug");
 app.set("views", "./views");
@@ -51,7 +54,7 @@ function getUsers(req, res) {
 	});
 }
 
-function addUser(req, res, data) {
+function addUser(res, data) {
    pool.query(`INSERT INTO ${dataset}(id, firstName, lastName, email, age) VALUES($1, $2, $3, $4, $5)`, data, (e, result) => {
       if (e) {
          res.render("error", {attempt: "Error while attempting to add user"});
@@ -114,6 +117,16 @@ app.get("/edit/:uid", (req, res) => {
    //    editing = req.params.uid;
    //    res.render("editUser", data[0]);
    // });
+   pool.query(`SELECT * FROM ${dataset} WHERE id = $1`, [req.params.uid], (e, data) => {
+      if (e) throw e;
+      // if (data.rows) {
+      //    res.rrend
+      // } else {
+      //    res.render("users", { users: [], userCount: 0 });
+      // }
+      editing = req.params.uid;
+      res.render("editUser", data.rows[0]);
+   });
 });
 
 app.get("/delete/:uid", (req, res) => {
@@ -121,6 +134,17 @@ app.get("/delete/:uid", (req, res) => {
    //    .deleteOne({ userId: req.params.uid }, (e, result) => {
    //    updateUsers(res);
    // });
+   pool.query(`DELETE FROM ${dataset} WHERE id = $1`, [req.params.uid], (e, data) => {
+      if (e) throw e;
+      // if (data.rows) {
+      //    res.rrend
+      // } else {
+      //    res.render("users", { users: [], userCount: 0 });
+      // }
+      pool.query(`SELECT * FROM ${dataset}`, (e, data) => {
+         res.render("users", { users: data.rows, userCount: data.rows.length });
+      });
+   });
 });
 
 // =======================================
@@ -133,10 +157,13 @@ app.post("/sort", postParse, (req, res) => {
    // db.find({}, (e, data) => {
    //    res.render("users", { users: data, userCount: data.length || 0 });
    // }).sort(order + "" + type);
+   pool.query(`SELECT * FROM ${dataset} ORDER BY ${type} ${order}`, (e, data) => {
+      res.render("users", { users: data.rows, userCount: data.rows.length });
+   });
 });
 
 app.post("/newUser", postParse, (req, res) => {
-   addUser(uuid(), req.body.firstName, req.body.lastName, req.body.email, req.body.age, res);
+   addUser(res, uuid(), req.body.firstName, req.body.lastName, req.body.email, req.body.age, res);
 });
 
 app.post("/editExisting", postParse, (req, res) => {
@@ -150,6 +177,11 @@ app.post("/editExisting", postParse, (req, res) => {
    //    if (e) console.log(e);
    //    updateUsers(res);
    // });
+   pool.query(`UPDATE ${dataset} SET firstName = $1, lastName = $2, email = $3, age = $4 WHERE id = $5`, [updatedUser.firstName, updateUser.lastName, updatedUser.email, updatedUser.age, editing], (e, data) => {
+      pool.query(`SELECT * FROM ${dataset}`, (e, data) => {
+         res.render("users", { users: data.rows, userCount: data.rows.length });
+      });
+   });
 });
 
 app.post("/search", postParse, (req, res) => {
@@ -164,6 +196,9 @@ app.post("/search", postParse, (req, res) => {
    // db.find(filter, (e, data) => {
    //    res.render("users", {users: data, userCount: data.length || 0});
    // });
+   pool.query(`SELECT * FROM ${dataset} WHERE $1 = $2`, [filter[0], filter[1]], (e, data) => {
+      res.render("users", { users: data.rows, userCount: data.rows.length });
+   });
 });
 
 // =======================================
@@ -202,4 +237,9 @@ function manageTables() {
    }
 }
 
+async function updateUsers(res) {
+   db.find({}, (e, data) => {
+      res.render("users", {users: data, userCount: data.length || 0});
+   });
+}
 // manageTables();
