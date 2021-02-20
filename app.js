@@ -57,6 +57,7 @@ function getUsers(req, res) {
 function addUser(res, data) {
    pool.query(`INSERT INTO ${dataset}(id, firstName, lastName, email, age) VALUES($1, $2, $3, $4, $5)`, data, (e, result) => {
       if (e) {
+         console.log(e);
          res.render("error", {attempt: "Error while attempting to add user"});
       } else {
          showAllUsers(res);
@@ -163,7 +164,7 @@ app.post("/sort", postParse, (req, res) => {
 });
 
 app.post("/newUser", postParse, (req, res) => {
-   addUser(res, uuid(), req.body.firstName, req.body.lastName, req.body.email, req.body.age, res);
+   addUser(res, [uuid(), req.body.firstName, req.body.lastName, req.body.email, req.body.age]);
 });
 
 app.post("/editExisting", postParse, (req, res) => {
