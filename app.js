@@ -141,7 +141,7 @@ app.get("/edit/:uid", (req, res) => {
       //    res.render("users", { users: [], userCount: 0 });
       // }
       editing = req.params.uid;
-      res.render("editUser", data.rows[0]);
+      res.render("editUser", { firstName: data.rows[0].firstName, lastName: data.rows[0].lastName, email: data.rows[0].email, age: data.rows[0].age } );
    });
 });
 
