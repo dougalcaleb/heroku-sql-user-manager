@@ -68,7 +68,7 @@ function addUser(res, data) {
 function showAllUsers(res, sortCol = "id", dir = "ASC") {
    pool.query(`SELECT * FROM ${dataset} ORDER BY ${sortCol} ${dir}`, (e, data) => {
       if (e) throw e;
-      res.render("users", {users: data});
+      res.render("users", {users: data.rows, userCount: data.rows.length});
    });
 }
 
